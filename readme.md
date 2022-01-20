@@ -1,6 +1,7 @@
 # Python api for text processing between two texts
 ### to activate the virtual environemnt
-- source /fypenv/bin/activate
+- "source /fypenv/bin/activate" --for linux and macos
+- "fypenv\bin\active" --for windows
 
 ### to install all the dependencies use
 
