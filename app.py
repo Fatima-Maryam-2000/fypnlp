@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import request
-
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 app = Flask(__name__)
 
 
@@ -34,9 +35,22 @@ def validate(user_id):
 
 
 def similarityCheck(ideaA, ideaB):
-    # nlp algorithm here
+    # nlp algorithm here 😃
     # store similarity check score in 'score variable here'
-    score = 97.9
+    # Create TF-idf model...//comment///stop_words=token_stop,tokenizer=tokenizer
+    vectorizer = TfidfVectorizer()
+    doc_vectors = vectorizer.fit_transform([ideaA] + [ideaB])
+
+    # Calculate similarity
+    cosine_similarities = linear_kernel(doc_vectors[0:1],
+                                        doc_vectors).flatten()
+    document_scores = [item.item() for item in cosine_similarities[1:]]
+    # [0.0, 0.287]
+    score = 0
+    for x in document_scores:
+        score = x * 100
+        #print(score)
+
     return score
 
 
