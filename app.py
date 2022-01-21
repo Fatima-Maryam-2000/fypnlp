@@ -17,10 +17,11 @@ def name(user_id):
         # header dont support sending of large data body does.
         request_data = request.get_json()
         text_a = request_data["text_a"]
-        text_b = request_data["text_b"]
+        text_array = request_data["text_array"]
         print(text_a)
-        print(text_b)
-        return str(similarityCheck(text_a, text_b))
+        print(text_array)
+        # return str(similarityCheck(text_a, text_array))
+        return str(similarityAcrossIdeas(text_a, text_array))
     return "Invalid User, Event will be logged"
 
 
@@ -53,6 +54,12 @@ def similarityCheck(ideaA, ideaB):
 
     return score
 
+def similarityAcrossIdeas(ideaA, arrayIdea):
+    ideasScore = []
+    for idea in arrayIdea:
+        # append score in an array
+        ideasScore.append(similarityCheck(ideaA, idea))
+    return ideasScore
 
 def logger(loggedText):
     # logging code here
