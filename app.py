@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import linear_kernel
+from sentence_transformers import SentenceTransformer, util
 app = Flask(__name__)
 
 
@@ -55,11 +56,26 @@ def similarityCheck(ideaA, ideaB):
     return score
 
 def similarityAcrossIdeas(ideaA, arrayIdea):
-    ideasScore = []
-    for idea in arrayIdea:
+    #ideasScore = []
+    #for idea in arrayIdea:
         # append score in an array
-        ideasScore.append(similarityCheck(ideaA, idea))
-    return ideasScore
+        #ideasScore.append(similarityCheck(ideaA, idea))
+    #return ideasScore
+    model = SentenceTransformer('sentence-transformers/multi-qa-MiniLM-L6-cos-v1')
+
+    #Encode query and documents
+    query_emb = model.encode(ideaA)
+    doc_emb = model.encode(arrayIdea)
+
+    #Compute dot score between query and all document embeddings
+    scores = util.dot_score(query_emb, doc_emb)[0].cpu().tolist()
+
+    #Combine docs & scores
+    doc_score_pairs = list(zip(arrayIdea, scores))
+
+    #Sort by decreasing score
+    doc_score_pairs = sorted(doc_score_pairs, key=lambda x: x[1], reverse=True)
+    return doc_score_pairs[0]
 
 def logger(loggedText):
     # logging code here
@@ -67,4 +83,4 @@ def logger(loggedText):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, host="127.0.0.1", port="4300")
+    app.run(debug=True, host="127.0.0.1", port="5000")
