@@ -1,10 +1,11 @@
 from flask import Flask
 from flask import request
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
-from sentence_transformers import SentenceTransformer, util
+from flask_cors import CORS
+# from sklearn.feature_extraction.text import TfidfVectorizer
+# from sklearn.metrics.pairwise import linear_kernel
+# from sentence_transformers import SentenceTransformer, util
 app = Flask(__name__)
-
+CORS(app)
 
 @app.route('/nlp/<user_id>', methods=['POST'])
 def name(user_id):
@@ -22,7 +23,11 @@ def name(user_id):
         print(text_a)
         print(text_array)
         # return str(similarityCheck(text_a, text_array))
-        return str(similarityAcrossIdeas(text_a, text_array))
+        # return str(similarityAcrossIdeas(text_a, text_array))
+        return {
+                "idea":"abc fatima",
+                "score":0.5
+            }
     return "Invalid User, Event will be logged"
 
 
