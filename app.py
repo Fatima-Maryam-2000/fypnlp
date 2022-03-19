@@ -1,7 +1,9 @@
 from flask import Flask
 from flask import request
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import linear_kernel
+#from sklearn.feature_extraction.text import TfidfVectorizer
+#from sklearn.metrics.pairwise import linear_kernel
+from sentence_transformers import SentenceTransformer, util
+import json
 app = Flask(__name__)
 
 
@@ -17,9 +19,9 @@ def name(user_id):
         # header dont support sending of large data body does.
         request_data = request.get_json()
         text_a = request_data["text_a"]
-        text_array = request_data["text_array"]
+        #text_array = request_data["text_array"]
         print(text_a)
-        print(text_array)
+        #print(text_array)
         # return str(similarityCheck(text_a, text_array))
         return str(similarityAcrossIdeas(text_a, text_array))
     return "Invalid User, Event will be logged"
@@ -55,11 +57,36 @@ def similarityCheck(ideaA, ideaB):
     return score
 
 def similarityAcrossIdeas(ideaA, arrayIdea):
-    ideasScore = []
-    for idea in arrayIdea:
+    #ideasScore = []
+    #for idea in arrayIdea:
         # append score in an array
-        ideasScore.append(similarityCheck(ideaA, idea))
-    return ideasScore
+        #ideasScore.append(similarityCheck(ideaA, idea))
+    #return ideasScore
+    
+    
+    dscrpt=[]
+    f = open('data.json',encoding="utf8")
+    data = json.load(f)
+    for i in data['ideas']:
+        dscrpt.append(i['Description'])
+    f.close()
+    
+    
+    model = SentenceTransformer('sentence-transformers/multi-qa-MiniLM-L6-cos-v1')
+
+    #Encode query and documents
+    query_emb = model.encode(ideaA)
+    doc_emb = model.encode(dscrpt)
+
+    #Compute dot score between query and all document embeddings
+    scores = util.dot_score(query_emb, doc_emb)[0].cpu().tolist()
+
+    #Combine docs & scores
+    doc_score_pairs = list(zip(dscrpt, scores))
+
+    #Sort by decreasing score
+    doc_score_pairs = sorted(doc_score_pairs, key=lambda x: x[1], reverse=True)
+    return doc_score_pairs[0]
 
 def logger(loggedText):
     # logging code here
