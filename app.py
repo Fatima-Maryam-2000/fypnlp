@@ -3,10 +3,11 @@ from flask import request
 #from sklearn.feature_extraction.text import TfidfVectorizer
 #from sklearn.metrics.pairwise import linear_kernel
 from sentence_transformers import SentenceTransformer, util
+from flask_cors import CORS
 import json
 app = Flask(__name__)
 
-
+CORS(app)
 @app.route('/nlp/<user_id>', methods=['POST'])
 def name(user_id):
     # validate user id
@@ -20,10 +21,19 @@ def name(user_id):
         request_data = request.get_json()
         text_a = request_data["text_a"]
         #text_array = request_data["text_array"]
-        print(text_a)
+        print("Abubakar is the best")
+        print(text_a["BlockData"]["Description"])
+        
+        
+        return {
+            "sameIdea":str(similarityAcrossIdeas(text_a["BlockData"]["Description"])[0]),
+            "score" :str(similarityAcrossIdeas(text_a["BlockData"]["Description"])[1])
+        }
+        # [str(similarityAcrossIdeas(text_a["BlockData"]["Description"])[0]),
+                # str(similarityAcrossIdeas(text_a["BlockData"]["Description"])[1])]
         #print(text_array)
         # return str(similarityCheck(text_a, text_array))
-        return str(similarityAcrossIdeas(text_a, text_array))
+        
     return "Invalid User, Event will be logged"
 
 
@@ -56,7 +66,7 @@ def similarityCheck(ideaA, ideaB):
 
     return score
 
-def similarityAcrossIdeas(ideaA, arrayIdea):
+def similarityAcrossIdeas(ideaA):
     #ideasScore = []
     #for idea in arrayIdea:
         # append score in an array
