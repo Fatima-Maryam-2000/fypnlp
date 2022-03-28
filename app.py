@@ -146,9 +146,17 @@ def abc():
     score_txt = similarityAcrossIdeas(ideaA)
     
     #print(score_txt)
-    
+      
     x= {
-      "block": request.json,
+      "Title": request.json['Title'],
+      "Description": request.json['Description'],
+      "Domain": request.json['Domain'],
+      "Owners": request.json['Owners'],
+      "Ownership_price": request.json['Ownership_price'],
+      "Pricing_history": request.json['Pricing_history'],
+      "Problem": request.json['Problem'],
+      "Technologies_used": request.json['Technologies_used'],
+      "Viewing_price": request.json['Viewing_price'],      
       "score_text": score_txt[0],
       "score": score_txt[1]
     } 
