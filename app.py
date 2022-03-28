@@ -14,7 +14,7 @@ CORS(app)
 ideaList = []
 
 @app.route('/nlp/<user_id>', methods=['POST'])
-def name(user_id):
+def getBlockChain(user_id):
     # validate user id
     if (validate(user_id=user_id)):
         # in last approach we sent data as query parameter with ?text_a=something&text_b=something
@@ -134,19 +134,36 @@ def abc():
     #response = requests.get('http://localhost:8081/listideas')
     #requests.post("http://localhost:8081/proposeidea", request.data,)
     #print(request.json['Description'])
+    
+    #print(request.data)
+    
+    
     ideaA = request.json['Description']
     #print(ideaA)
+    #print(ideaList)
     #return request.data
     
     score_txt = similarityAcrossIdeas(ideaA)
     
-    print(score_txt)
+    #print(score_txt)
     
-    #requests.post("http://localhost:8081/proposeidea", request.data,score_txt[0],score_txt[1])
-    return ideaA
+    x= {
+      "block": request.json,
+      "score_text": score_txt[0],
+      "score": score_txt[1]
+    } 
+    
+    print(x)
+    
+    #requests.post("http://localhost:8081/proposeidea", request.data)
+    return x
+    #http://localhost:8081/getPendingIdeas
+
 
 
 
     
-if __name__ == "__main__":
+if __name__ == "__main__": 
+    getBlockChain("1234")
     app.run(debug=True, host="127.0.0.1", port="5000")
+    
