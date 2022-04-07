@@ -24,7 +24,7 @@ def getBlockChain(user_id):
         # now we're sending data as body. so now we select body in thunder client rather than header.
         # header dont support sending of large data body does.
         
-        response = requests.get('http://localhost:8081/listideas')
+        response = requests.get('http://localhost:8081/getchain')
         #print(response.json()[0]['Description'])
         
         #dscrpt=[]
@@ -147,24 +147,32 @@ def abc():
     
     #print(score_txt)
       
-    x= {
-      "Title": request.json['Title'],
-      "Description": request.json['Description'],
-      "Domain": request.json['Domain'],
-      "Owners": request.json['Owners'],
-      "Ownership_price": request.json['Ownership_price'],
-      "Pricing_history": request.json['Pricing_history'],
-      "Problem": request.json['Problem'],
-      "Technologies_used": request.json['Technologies_used'],
-      "Viewing_price": request.json['Viewing_price'],      
-      "score_text": score_txt[0],
-      "score": score_txt[1]
+    # x= {
+    #   "Title": request.json['Title'],
+    #   "Description": request.json['Description'],
+    #   "Domain": request.json['Domain'],
+    #   "Owners": request.json['Owners'],
+    #   "Ownership_price": request.json['Ownership_price'],
+    #   "Pricing_history": request.json['Pricing_history'],
+    #   "Problem": request.json['Problem'],
+    #   "Technologies_used": request.json['Technologies_used'],
+    #   "Viewing_price": request.json['Viewing_price'],      
+    #   "score_text": score_txt[0],
+    #   "score": score_txt[1]
+    # } 
+    
+    
+    proposedIdea= {
+      "BlockData": request.json,
+      "SimIdea": score_txt[0],
+      "SimScore": score_txt[1]
     } 
     
-    print(x)
+    print(proposedIdea)
     
-    #requests.post("http://localhost:8081/proposeidea", request.data)
-    return x
+    z = requests.post("http://localhost:8081/proposeidea", proposedIdea)
+    print("zzzz", z)
+    return proposedIdea
     #http://localhost:8081/getPendingIdeas
 
 
